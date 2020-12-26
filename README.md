@@ -2,10 +2,10 @@
 gui to analyze stocks and financial papers.
 
 Needed imports: 
-pysimplegui
-matplotlib.pyplot
-mplfinance
-pandas
+pysimplegui,
+matplotlib.pyplot,
+mplfinance,
+pandas,
 yfinance
 
 vision of the project: use technical analysis and financial algorithms to increase profit on financial market.
