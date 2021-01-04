@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, FigureCanvasAgg, NavigationToolbar2Tk
 import matplotlib.ticker as mticker
 import mplfinance as mpf
-
+import datetime
+from extract_financial_data import get_date_from_period
 
 
 def draw_figure_w_toolbar(canvas, fig, canvas_toolbar):
@@ -26,7 +27,6 @@ class Toolbar(NavigationToolbar2Tk):
 
 
 def create_gui(financial_data):
-    #sg.theme('dark blue')
     period_def = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
 
     layout = [
@@ -51,14 +51,14 @@ def create_gui(financial_data):
         print(event, values)
         if event in (sg.WIN_CLOSED, 'Exit'):
             break
-        if event is 'Normal plot':
+        if event == 'Normal plot':
             #  MATPLOTLIB
             fig = create_plot(financial_data, values)
             draw_figure_w_toolbar(window['fig_cv'].TKCanvas, fig, window['-TOOLBOX-'].TKCanvas)
-        if event is 'Candlestick plot':
+        if event == 'Candlestick plot':
+            # CANDLESTICK PLOT
             fig = create_candlestick_plot(financial_data, values)
             draw_figure_w_toolbar(window['fig_cv'].TKCanvas, fig, window['-TOOLBOX-'].TKCanvas)
-            # CANDLESTICK PLOT
 
     window.close()
 
@@ -71,18 +71,41 @@ def create_plot(financial_data, values):
 
     fig.set_size_inches(404 * 2 / float(dpi), 404 / float(dpi))
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
+
     df = financial_data.get_stock_history(ticker, values['-PERIOD-'][0])
     open_price = df['Open']
     plt.plot(open_price, label=values['-STOCK-'][0])
 
     # Moving average:
     if not values['-PERIOD-'][0] == '1d' and not values['-PERIOD-'][0] == '5d' \
-            and not values['-PERIOD-'][0] == '1m':  # moving average not available for period 1d, 5d and 1m.
-        if values['-50DMOVAVE-'] is True:
-            rolling_mean_50 = open_price.rolling(window=50).mean()
+            and not values['-PERIOD-'][0] == '1m':  # moving average not available for period 1d, 5d and 1mo.
+
+        if values['-50DMOVAVE-']:  # 50 days moving average
+            if not values['-PERIOD-'][0] == 'max':
+                # to get the startdate for the mov ave calculation
+                # and get the df back to that date.
+                startdate = get_date_from_period(values['-PERIOD-'][0], 50)
+                df = financial_data.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
+                open_price_mov_ave = df['Open']
+            else:
+                # if period = max the moving average calculation starts at the first trade day.
+                open_price_mov_ave = open_price
+
+            rolling_mean_50 = open_price_mov_ave.rolling(window=50).mean()
             plt.plot(rolling_mean_50, label='50 days moving average')
-        if values['-200DMOVAVE-'] is True:
-            rolling_mean_200 = open_price.rolling(window=200).mean()
+
+        if values['-200DMOVAVE-']:  # 200 days moving average
+            if not values['-PERIOD-'][0] == 'max':
+                # to get the startdate for the mov ave calculation
+                # and get the df back to that date.
+                startdate = get_date_from_period(values['-PERIOD-'][0], 200)
+                df = financial_data.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
+                open_price_mov_ave = df['Open']
+            else:
+                # if period = max the moving average calculation starts at the first trade day.
+                open_price_mov_ave = open_price
+
+            rolling_mean_200 = open_price_mov_ave.rolling(window=200).mean()
             plt.plot(rolling_mean_200, label='200 days moving average')
 
     plt.grid()
@@ -90,6 +113,7 @@ def create_plot(financial_data, values):
     plt.ylabel('Price [$]')
 
     return fig
+
 
 def create_candlestick_plot(financial_data, values):
     plt.close('all')
@@ -100,4 +124,5 @@ def create_candlestick_plot(financial_data, values):
     fig, axlist = mpf.plot(ohlc, type='candlestick', no_xgaps=True,  figratio=(8, 5), returnfig=True)
 
     return fig
+
 
