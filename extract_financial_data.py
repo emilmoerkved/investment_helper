@@ -1,8 +1,10 @@
 import pandas as pd
 import yfinance as yf
+import datetime
+import pandas_market_calendars as mcal
 
 
-class FinancialData():
+class FinancialData:
 
     def __init__(self):
         self.readable_stock_list = []
@@ -41,6 +43,49 @@ class FinancialData():
         df = yf.download(tickers=ticker, period=period, interval=granularity, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
+    def get_stock_history_based_on_dates(self, ticker, startdate, enddate):
+        df = yf.download(tickers=ticker, start=startdate, end=enddate)
+        return df[['Open', 'High', 'Low', 'Close', 'Volume']]
+
     def get_ticker_from_readable_stock(self, readable_stock):
         ticker = readable_stock[readable_stock.index('---')+3:]
         return ticker
+
+
+# period can be 1m, 3m, 6m, 1y, 2y, 5y, 10y, ytd
+def get_date_from_period(period, mov_ave_days):
+    date = datetime.date.today()
+    if period == '1mo':
+        date -= datetime.timedelta(days=30)
+    elif period == '3mo':
+        date -= datetime.timedelta(days=91)
+    elif period == '6mo':
+        date -= datetime.timedelta(days=182)
+    elif period == '1y':
+        date -= datetime.timedelta(days=365)
+    elif period == '2y':
+        date -= datetime.timedelta(days=730)
+    elif period == '5y':
+        date -= datetime.timedelta(days=1820)
+    elif period == '10y':
+        date -= datetime.timedelta(days=3650)
+    elif period == 'ytd':
+        date = datetime.date.fromisoformat('-'.join([str(date.year), '01', '01']))
+
+    return get_startdate_of_mov_ave(date, mov_ave_days)
+
+
+def get_startdate_of_mov_ave(date, days):
+    nyse = mcal.get_calendar('NYSE')
+    date_schedule = nyse.schedule(date-datetime.timedelta(days=days+days), date)
+    t = date_schedule['market_open']
+    market_days_array = []
+    for market_date in t:
+        dt = market_date.to_pydatetime().date()
+        market_days_array.append(dt)
+        if dt is date:
+            break
+    return market_days_array[-days]
+
+
+
