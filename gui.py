@@ -72,9 +72,9 @@ def create_plot(financial_data, values):
     fig.set_size_inches(404 * 2 / float(dpi), 404 / float(dpi))
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
 
-    df = financial_data.get_stock_history(ticker, values['-PERIOD-'][0])
-    open_price = df['Open']
-    plt.plot(open_price, label=values['-STOCK-'][0])
+    df = financial_data.get_stock_history_based_on_period(ticker, values['-PERIOD-'][0])
+    close_price = df['Close']
+    plt.plot(close_price, label=values['-STOCK-'][0])
 
     # Moving average:
     if not values['-PERIOD-'][0] == '1d' and not values['-PERIOD-'][0] == '5d' \
@@ -86,12 +86,12 @@ def create_plot(financial_data, values):
                 # and get the df back to that date.
                 startdate = get_date_from_period(values['-PERIOD-'][0], 50)
                 df = financial_data.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
-                open_price_mov_ave = df['Open']
+                close_price_mov_ave = df['Close']
             else:
                 # if period = max the moving average calculation starts at the first trade day.
-                open_price_mov_ave = open_price
+                close_price_mov_ave = close_price
 
-            rolling_mean_50 = open_price_mov_ave.rolling(window=50).mean()
+            rolling_mean_50 = close_price_mov_ave.rolling(window=50).mean()
             plt.plot(rolling_mean_50, label='50 days moving average')
 
         if values['-200DMOVAVE-']:  # 200 days moving average
@@ -100,17 +100,17 @@ def create_plot(financial_data, values):
                 # and get the df back to that date.
                 startdate = get_date_from_period(values['-PERIOD-'][0], 200)
                 df = financial_data.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
-                open_price_mov_ave = df['Open']
+                close_price_mov_ave = df['Close']
             else:
                 # if period = max the moving average calculation starts at the first trade day.
-                open_price_mov_ave = open_price
+                close_price_mov_ave = close_price
 
-            rolling_mean_200 = open_price_mov_ave.rolling(window=200).mean()
+            rolling_mean_200 = close_price_mov_ave.rolling(window=200).mean()
             plt.plot(rolling_mean_200, label='200 days moving average')
 
     plt.grid()
     plt.legend(loc='best', fontsize='small')
-    plt.ylabel('Price [$]')
+    plt.ylabel('Close Price [$]')
 
     return fig
 
@@ -118,7 +118,7 @@ def create_plot(financial_data, values):
 def create_candlestick_plot(financial_data, values):
     plt.close('all')
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
-    df = financial_data.get_stock_history(ticker, values['-PERIOD-'][0])
+    df = financial_data.get_stock_history_based_on_period(ticker, values['-PERIOD-'][0])
     ohlc = df[['Open', 'High', 'Low', 'Close']]
 
     fig, axlist = mpf.plot(ohlc, type='candlestick', no_xgaps=True,  figratio=(8, 5), returnfig=True)
