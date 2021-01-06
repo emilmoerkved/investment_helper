@@ -35,7 +35,7 @@ class FinancialData:
         string += 'BUSINESS SUMMARY: ' + stock_info_dict['longBusinessSummary']
         return string
 
-    def get_stock_history(self, ticker, period='ytd'):
+    def get_stock_history_based_on_period(self, ticker, period='ytd'):
         if period == '1d':
             granularity = '1m'
         else:
@@ -44,7 +44,7 @@ class FinancialData:
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
     def get_stock_history_based_on_dates(self, ticker, startdate, enddate):
-        df = yf.download(tickers=ticker, start=startdate, end=enddate)
+        df = yf.download(tickers=ticker, start=startdate, end=enddate, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
     def get_ticker_from_readable_stock(self, readable_stock):
