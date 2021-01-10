@@ -36,7 +36,7 @@ def create_gui(financial_data):
             layout=[[sg.Canvas(key='fig_cv', size=(400 * 2, 400))]],
             background_color='#DAE0E6',
             pad=(0, 0)),
-         sg.Listbox(values=period_def, default_values='ytd', size=(5, 11),  key='-PERIOD-')],
+         sg.Listbox(values=period_def, default_values='ytd', size=(5, 11), key='-PERIOD-')],
 
         [sg.Canvas(key='-TOOLBOX-', pad=((300, 3), 0))],
 
@@ -69,11 +69,12 @@ def create_plot(financial_data, values):
     plt.close('all')
     plt.figure(1)
     fig = plt.figure()
-    #fig = plt.gca()
+    # fig = plt.gca()
     dpi = fig.get_dpi()
 
     ax1 = plt.subplot2grid((6, 1), (0, 0), rowspan=4, colspan=1)
-    ax2 = plt.subplot2grid((6, 1), (5, 0), rowspan=1, colspan=1)
+    ax2 = plt.subplot2grid((6, 1), (5, 0), rowspan=1, colspan=1, sharex=ax1)
+    # sharex=ax1 makes them share x-axis. (zooming work for both ax1 and ax2)
 
     fig.set_size_inches(404 * 2 / float(dpi), 404 / float(dpi))
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
@@ -82,9 +83,8 @@ def create_plot(financial_data, values):
     close_price = df['Close']
     volume = df['Volume']
 
-
-    ax1.plot(close_price, label=values['-STOCK-'][0], linewidth=0.8)
-    ax2.plot(volume, linewidth=0.8)
+    ax1.plot(close_price.index, close_price.values, label=values['-STOCK-'][0], linewidth=0.8)
+    ax2.plot(volume.index, volume.values, linewidth=0.8)
     ax2.fill_between(volume.index, volume)
 
     ax1.grid()
@@ -126,6 +126,9 @@ def create_plot(financial_data, values):
     ax1.set_ylabel('Close Price [$]')
     ax2.set_ylabel('Volume')
 
+    # Make x-axis invisible for ax1
+    plt.setp(ax1.get_xticklabels(), visible=False)
+
     return fig
 
 
@@ -135,8 +138,7 @@ def create_candlestick_plot(financial_data, values):
     df = financial_data.get_stock_history_based_on_period(ticker, values['-PERIOD-'][0])
     ohlc = df[['Open', 'High', 'Low', 'Close']]
 
-    fig, axlist = mpf.plot(ohlc, type='candlestick',  figratio=(8, 5), returnfig=True, style='charles', ylabel='Open, High, Low, Close')
+    fig, axlist = mpf.plot(ohlc, type='candlestick', figratio=(8, 5), returnfig=True, style='charles',
+                           ylabel='Open, High, Low, Close')
 
     return fig
-
-
