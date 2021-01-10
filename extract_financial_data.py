@@ -52,7 +52,7 @@ class FinancialData:
         return ticker
 
 
-# period can be 1m, 3m, 6m, 1y, 2y, 5y, 10y, ytd
+# period can be 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd
 def get_date_from_period(period, mov_ave_days):
     date = datetime.date.today()
     if period == '1mo':
