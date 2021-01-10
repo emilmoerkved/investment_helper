@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, FigureCanvasAgg, NavigationToolbar2Tk
 import matplotlib.ticker as mticker
 from matplotlib import style
+from matplotlib.dates import DateFormatter
 import mplfinance as mpf
 import datetime
 from extract_financial_data import get_date_from_period
@@ -31,9 +32,9 @@ def create_gui(financial_data):
     period_def = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
 
     layout = [
-        [sg.Listbox(values=financial_data.readable_stock_list, size=(40, 25), key='-STOCK-'),
+        [sg.Listbox(values=financial_data.readable_stock_list, size=(40, 50), key='-STOCK-'),
          sg.VSeparator(), sg.Column(
-            layout=[[sg.Canvas(key='fig_cv', size=(400 * 2, 400))]],
+            layout=[[sg.Canvas(key='fig_cv', size=(400 * 3, 400*2))]],
             background_color='#DAE0E6',
             pad=(0, 0)),
          sg.Listbox(values=period_def, default_values='ytd', size=(5, 11), key='-PERIOD-')],
@@ -44,8 +45,9 @@ def create_gui(financial_data):
          sg.Checkbox('50 days moving average', default=False, key='-50DMOVAVE-', pad=((300, 3,), 0)),
          sg.Checkbox('200 days moving average', default=False, key='-200DMOVAVE-')], ]
 
-    window = sg.Window('Investment Helper', layout)
+    window = sg.Window('Investment Helper', layout, resizable=True)
     window.Finalize()
+    window.Maximize()
 
     while True:
         event, values = window.read()
@@ -65,16 +67,16 @@ def create_gui(financial_data):
 
 
 def create_plot(financial_data, values):
-    style.use('fivethirtyeight')
     plt.close('all')
-    plt.figure(1)
-    fig = plt.figure()
+    style.use('seaborn-darkgrid')
+    fig = plt.figure(1)
     # fig = plt.gca()
     dpi = fig.get_dpi()
 
+    formatter = get_formatter(values['-PERIOD-'][0])
+
     ax1 = plt.subplot2grid((6, 1), (0, 0), rowspan=4, colspan=1)
     ax2 = plt.subplot2grid((6, 1), (5, 0), rowspan=1, colspan=1, sharex=ax1)
-    # sharex=ax1 makes them share x-axis. (zooming work for both ax1 and ax2)
 
     fig.set_size_inches(404 * 2 / float(dpi), 404 / float(dpi))
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
@@ -83,12 +85,12 @@ def create_plot(financial_data, values):
     close_price = df['Close']
     volume = df['Volume']
 
-    ax1.plot(close_price.index, close_price.values, label=values['-STOCK-'][0], linewidth=0.8)
-    ax2.plot(volume.index, volume.values, linewidth=0.8)
+    ax1.plot_date(close_price.index, close_price.values, '-', linewidth=2)
+    ax2.plot_date(volume.index, volume.values, '-', linewidth=0.8)
+    ax2.xaxis.set_major_formatter(formatter)
+    for label in ax2.xaxis.get_ticklabels():
+        label.set_rotation(45)
     ax2.fill_between(volume.index, volume)
-
-    ax1.grid()
-    ax2.grid()
 
     # Moving average:
     if not values['-PERIOD-'][0] == '1d' and not values['-PERIOD-'][0] == '5d' \
@@ -107,6 +109,7 @@ def create_plot(financial_data, values):
 
             rolling_mean_50 = close_price_mov_ave.rolling(window=50).mean()
             ax1.plot(rolling_mean_50, label='50 days moving average', linewidth=0.8)
+            ax1.legend(loc='best', fontsize='small')
 
         if values['-200DMOVAVE-']:  # 200 days moving average
             if not values['-PERIOD-'][0] == 'max':
@@ -121,13 +124,14 @@ def create_plot(financial_data, values):
 
             rolling_mean_200 = close_price_mov_ave.rolling(window=200).mean()
             ax1.plot(rolling_mean_200, label='200 days moving average', linewidth=0.8)
+            ax1.legend(loc='best', fontsize='small')
 
-    ax1.legend(loc='best', fontsize='small')
     ax1.set_ylabel('Close Price [$]')
-    ax2.set_ylabel('Volume')
+    ax1.set_title(ticker)
+    ax2.set_ylabel('Volume [# trades]')
 
-    # Make x-axis invisible for ax1
     plt.setp(ax1.get_xticklabels(), visible=False)
+    plt.subplots_adjust(left=0.125, bottom=0.171, right=0.9, top=0.88, wspace=0.2, hspace=0.195)
 
     return fig
 
@@ -136,9 +140,32 @@ def create_candlestick_plot(financial_data, values):
     plt.close('all')
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
     df = financial_data.get_stock_history_based_on_period(ticker, values['-PERIOD-'][0])
-    ohlc = df[['Open', 'High', 'Low', 'Close']]
+    #  df = [['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
 
-    fig, axlist = mpf.plot(ohlc, type='candlestick', figratio=(8, 5), returnfig=True, style='charles',
-                           ylabel='Open, High, Low, Close')
+    if values['-50DMOVAVE-'] and values['-200DMOVAVE-']:
+        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
+                               ylabel='Open, High, Low, Close', style='yahoo', mav=(50, 200))
+        axlist[0].legend(['50 days mov ave', '200 days mov ave'], loc='best', fontsize='small')
+    elif values['-50DMOVAVE-']:
+        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
+                               ylabel='Open, High, Low, Close', style='yahoo', mav=(50))
+        axlist[0].legend(['50 days mov ave'], loc='best', fontsize='small')
+    elif values['-200DMOVAVE-']:
+        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
+                               ylabel='Open, High, Low, Close', style='yahoo', mav=(200))
+        axlist[0].legend(['200 days mov ave'], loc='best', fontsize='small')
+    else:
+        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
+                           ylabel='Open, High, Low, Close', style='yahoo')
+    axlist[0].set_title(ticker)
 
     return fig
+
+
+def get_formatter(period):
+    if period == '1d':
+        return DateFormatter('%H-%M')
+    elif period == 'ytd':
+        return DateFormatter('%b-%d')
+    else:
+        return DateFormatter('%Y-%b-%d')
