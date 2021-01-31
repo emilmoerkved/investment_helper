@@ -7,6 +7,7 @@ from matplotlib.dates import DateFormatter
 import mplfinance as mpf
 import datetime
 from extract_financial_data import get_date_from_period
+from technical_analysis import TechnicalAnalysis
 
 
 def draw_figure_w_toolbar(canvas, fig, canvas_toolbar):
@@ -43,7 +44,10 @@ def create_gui(financial_data):
 
         [sg.Button('Normal plot'), sg.Button('Candlestick plot'), sg.Button('Exit'),
          sg.Checkbox('50 days moving average', default=False, key='-50DMOVAVE-', pad=((300, 3,), 0)),
-         sg.Checkbox('200 days moving average', default=False, key='-200DMOVAVE-')], ]
+         sg.Checkbox('200 days moving average', default=False, key='-200DMOVAVE-'),
+         sg.Checkbox('Support levels', default=False, key='-SUPPORT-'),
+         sg.Checkbox('Resistance levels', default=False, key='-RESISTANCE-')],
+    ]
 
     window = sg.Window('Investment Helper', layout, resizable=True)
     window.Finalize()
@@ -70,7 +74,6 @@ def create_plot(financial_data, values):
     plt.close('all')
     style.use('seaborn-darkgrid')
     fig = plt.figure(1)
-    # fig = plt.gca()
     dpi = fig.get_dpi()
 
     formatter = get_formatter(values['-PERIOD-'][0])
@@ -93,11 +96,11 @@ def create_plot(financial_data, values):
     ax2.fill_between(volume.index, volume)
 
     # Moving average:
-    if not values['-PERIOD-'][0] == '1d' and not values['-PERIOD-'][0] == '5d' \
-            and not values['-PERIOD-'][0] == '1m':  # moving average not available for period 1d, 5d and 1mo.
+    if values['-PERIOD-'][0] != '1d' and values['-PERIOD-'][0] != '5d' \
+            and values['-PERIOD-'][0] != '1m':  # moving average not available for period 1d, 5d and 1mo.
 
         if values['-50DMOVAVE-']:  # 50 days moving average
-            if not values['-PERIOD-'][0] == 'max':
+            if values['-PERIOD-'][0] != 'max':
                 # to get the startdate for the mov ave calculation
                 # and get the df back to that date.
                 startdate = get_date_from_period(values['-PERIOD-'][0], 50)
@@ -112,7 +115,7 @@ def create_plot(financial_data, values):
             ax1.legend(loc='best', fontsize='small')
 
         if values['-200DMOVAVE-']:  # 200 days moving average
-            if not values['-PERIOD-'][0] == 'max':
+            if values['-PERIOD-'][0] != 'max':
                 # to get the startdate for the mov ave calculation
                 # and get the df back to that date.
                 startdate = get_date_from_period(values['-PERIOD-'][0], 200)
@@ -125,6 +128,16 @@ def create_plot(financial_data, values):
             rolling_mean_200 = close_price_mov_ave.rolling(window=200).mean()
             ax1.plot(rolling_mean_200, label='200 days moving average', linewidth=0.8)
             ax1.legend(loc='best', fontsize='small')
+
+    # Resistance and support levels:
+    technical_analysis_object = TechnicalAnalysis(ticker)
+
+    if values['-RESISTANCE-'] and values['-PERIOD-'][0] != '1d' :
+        technical_analysis_object.find_resistance_levels(df, resistance_threshold=0.01)
+        resistance_df = technical_analysis_object.get_closest_resistance_levels()
+        for date in resistance_df.index:
+            ax1.hlines(resistance_df.loc[date, 'High'], date, datetime.date.today(), colors='red', linewidths=0.5)
+
 
     ax1.set_ylabel('Close Price [$]')
     ax1.set_title(ticker)
@@ -141,22 +154,34 @@ def create_candlestick_plot(financial_data, values):
     ticker = financial_data.get_ticker_from_readable_stock(values['-STOCK-'][0])
     df = financial_data.get_stock_history_based_on_period(ticker, values['-PERIOD-'][0])
     #  df = [['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
+    mov_ave = []
+    legend_text = []
+    alines_list = []
+
+    # Resistance and support levels:
+    technical_analysis_object = TechnicalAnalysis(ticker)
 
     if values['-50DMOVAVE-'] and values['-200DMOVAVE-']:
-        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
-                               ylabel='Open, High, Low, Close', style='yahoo', mav=(50, 200))
-        axlist[0].legend(['50 days mov ave', '200 days mov ave'], loc='best', fontsize='small')
+        mov_ave.extend([50, 200])
+        legend_text.extend(['50 days mov ave', '200 days mov ave'])
     elif values['-50DMOVAVE-']:
-        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
-                               ylabel='Open, High, Low, Close', style='yahoo', mav=(50))
-        axlist[0].legend(['50 days mov ave'], loc='best', fontsize='small')
+        mov_ave.append(50)
+        legend_text.append('50 days mov ave')
     elif values['-200DMOVAVE-']:
-        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
-                               ylabel='Open, High, Low, Close', style='yahoo', mav=(200))
-        axlist[0].legend(['200 days mov ave'], loc='best', fontsize='small')
-    else:
-        fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
-                           ylabel='Open, High, Low, Close', style='yahoo')
+        mov_ave.append(200)
+        legend_text.append('200 days mov ave')
+
+    if values['-RESISTANCE-'] and values['-PERIOD-'][0] != '1d':
+        technical_analysis_object.find_resistance_levels(df, resistance_threshold=0.01)
+        resistance_df = technical_analysis_object.get_closest_resistance_levels()
+        latest_trading_day = df.index[-1]
+        for date in resistance_df.index:
+            alines_list.append([(date, resistance_df.loc[date, 'High']), (latest_trading_day, resistance_df.loc[date, 'High'])])
+
+    fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
+                           ylabel='Open, High, Low, Close', style='yahoo', mav=mov_ave,
+                           alines=dict(alines=alines_list, colors='red', linewidths=0.5))
+    axlist[0].legend(legend_text, loc='best', fontsize='small')
     axlist[0].set_title(ticker)
 
     return fig
