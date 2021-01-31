@@ -138,6 +138,12 @@ def create_plot(financial_data, values):
         for date in resistance_df.index:
             ax1.hlines(resistance_df.loc[date, 'High'], date, datetime.date.today(), colors='red', linewidths=0.5)
 
+    if values['-SUPPORT-'] and values['-PERIOD-'][0] != '1d' :
+        technical_analysis_object.find_support_levels(df, support_threshold=0.01)
+        support_df = technical_analysis_object.get_closest_support_levels()
+        for date in support_df.index:
+            ax1.hlines(support_df.loc[date, 'Low'], date, datetime.date.today(), colors='green', linewidths=0.5)
+
 
     ax1.set_ylabel('Close Price [$]')
     ax1.set_title(ticker)
@@ -157,6 +163,7 @@ def create_candlestick_plot(financial_data, values):
     mov_ave = []
     legend_text = []
     alines_list = []
+    colors_for_alines = []
 
     # Resistance and support levels:
     technical_analysis_object = TechnicalAnalysis(ticker)
@@ -177,10 +184,19 @@ def create_candlestick_plot(financial_data, values):
         latest_trading_day = df.index[-1]
         for date in resistance_df.index:
             alines_list.append([(date, resistance_df.loc[date, 'High']), (latest_trading_day, resistance_df.loc[date, 'High'])])
+            colors_for_alines.append('red')
+
+    if values['-SUPPORT-'] and values['-PERIOD-'][0] != '1d':
+        technical_analysis_object.find_support_levels(df, support_threshold=0.01)
+        support_df = technical_analysis_object.get_closest_support_levels()
+        latest_trading_day = df.index[-1]
+        for date in support_df.index:
+            alines_list.append([(date, support_df.loc[date, 'Low']), (latest_trading_day, support_df.loc[date, 'Low'])])
+            colors_for_alines.append('green')
 
     fig, axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
                            ylabel='Open, High, Low, Close', style='yahoo', mav=mov_ave,
-                           alines=dict(alines=alines_list, colors='red', linewidths=0.5))
+                           alines=dict(alines=alines_list, colors=colors_for_alines, linewidths=0.5))
     axlist[0].legend(legend_text, loc='best', fontsize='small')
     axlist[0].set_title(ticker)
 
