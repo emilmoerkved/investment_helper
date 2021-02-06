@@ -28,7 +28,8 @@ class FinancialData:
         stock_info = stock_ticker.info
         return stock_info
 
-    def get_stock_info_to_string(self, ticker, stock_info_dict):
+    def get_stock_info_to_string(self, ticker):
+        stock_info_dict = self.get_stock_info(ticker)
         string = '----- ' + ticker + ' -----\n'
         string += 'NAME: ' + stock_info_dict['longName'] + '\n'
         string += 'SECTOR: ' + stock_info_dict['sector'] + '\n'

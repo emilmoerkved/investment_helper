@@ -41,6 +41,7 @@ class TechnicalAnalysis:
         self._get_possible_resistance_points(yf_df)
         self._update_resistance_with_importance_column()
         self._update_importance_of_resistance_df(yf_df, resistance_threshold)
+        self._filter_out_paired('Resistance')
 
     def find_support_levels(self, yf_df, support_threshold=0.01):
         # Create a support data frame where the support points are defined as where the local minima is found
@@ -55,15 +56,19 @@ class TechnicalAnalysis:
         self._get_possible_support_points(yf_df)
         self._update_support_with_importance_column()
         self._update_importance_of_support_df(yf_df, support_threshold)
+        self._filter_out_paired('Support')
+
 
     def _get_possible_resistance_points(self, yf_df):
         last_close = yf_df.Close[-1]
+        self.resistance_update_date = yf_df.index[-1].date()
         self.resistance = pd.DataFrame(yf_df.High[(yf_df.High.shift(1) < yf_df.High)
                                                 & (yf_df.High.shift(-1) < yf_df.High)
                                                 & (yf_df.High > last_close)])
 
     def _get_possible_support_points(self, yf_df):
         last_close = yf_df.Close[-1]
+        self.support_update_date = yf_df.index[-1].date()
         self.support = pd.DataFrame(yf_df.Low[(yf_df.Low.shift(1) > yf_df.Low)
                                                  & (yf_df.Low.shift(-1) > yf_df.Low)
                                                  & (yf_df.Low < last_close)])
@@ -127,6 +132,15 @@ class TechnicalAnalysis:
                     self.resistance.loc[j, 'Importance'] = -1  # to indicate that this is already paired.
 
         self._set_date_as_index_of_resistance()  # to put back to dates as index
+
+    def _filter_out_paired(self, type):
+        if type == 'Resistance':
+            is_not_paired = self.resistance['Importance'] >= 0
+            self.resistance = self.resistance[is_not_paired]
+        elif type == 'Support':
+            is_not_paired = self.support['Importance'] >= 0
+            self.support = self.support[is_not_paired]
+
 
     def _update_importance_of_support_df(self, yf_df, support_threshold):
         self._reset_index_of_support() # Used as its easier to iterate with indexes as numbers
