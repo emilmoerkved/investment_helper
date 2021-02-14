@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, FigureCanvasAgg, NavigationToolbar2Tk
-from matplotlib import style
+from matplotlib import style, font_manager
 from matplotlib.dates import DateFormatter, num2date
 from matplotlib.widgets import MultiCursor
 import mplfinance as mpf
@@ -10,8 +10,15 @@ from extract_financial_data import get_date_from_period
 from technical_analysis import TechnicalAnalysis
 import numpy as np
 
+
 # For financial data object:
 PERIOD_DEF = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
+font_title = {'family': 'Courier New',
+              'color': '#822304',
+              'weight': 'heavy',
+              'size': 25,
+              }
+
 
 
 class Gui:
@@ -172,7 +179,8 @@ class Gui:
 
         # Customization of axes:
         self.axlist[0].set_ylabel('Close Price [$]')
-        self.axlist[0].set_title(ticker, pad=45, fontsize=25)
+        self.axlist[0].set_title(ticker + ' - ' + self.values['-STOCK-'][0][:self.values['-STOCK-'][0].index('-')],
+                                 pad=45, fontdict=font_title)
         self.axlist[1].set_ylabel('Volume [# trades]')
         plt.setp(self.axlist[0].get_xticklabels(), visible=False)
         plt.subplots_adjust(left=0.125, bottom=0.171, right=0.9, top=0.88, wspace=0.2, hspace=0.195)
@@ -341,7 +349,8 @@ class Gui:
 
         # Customize axes:
         self.axlist[0].legend(legend_text, loc='best', fontsize='small')
-        self.axlist[0].set_title(ticker, pad=45, fontsize=25)
+        self.axlist[0].set_title(ticker + ' - ' + self.values['-STOCK-'][0][:self.values['-STOCK-'][0].index('-')],
+                                 pad=45, fontdict=font_title)
 
 
 # Get dateformatter based on period chosen:
