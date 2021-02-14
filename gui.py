@@ -60,13 +60,19 @@ class Gui:
             if self.event in (sg.WIN_CLOSED, 'Exit'):
                 break
             if self.event == 'Normal plot':
-                #  MATPLOTLIB
-                self.create_plot()
-                self.draw_canvas()
+                if not self.values['-STOCK-']:
+                    sg.popup('You need to choose a stock before plotting!')
+                else:
+                    #  MATPLOTLIB
+                    self.create_plot()
+                    self.draw_canvas()
             if self.event == 'Candlestick plot':
-                # CANDLESTICK PLOT
-                self.create_candlestick_plot()
-                self.draw_canvas()
+                if not self.values['-STOCK-']:
+                    sg.popup('You need to choose a stock before plotting!')
+                else:
+                    # CANDLESTICK PLOT
+                    self.create_candlestick_plot()
+                    self.draw_canvas()
         self.window.close()
 
     def draw_canvas(self):
@@ -283,7 +289,7 @@ class Gui:
             mov_ave.append(200)
             legend_text.append('200 days mov ave')
 
-        #---RESTISTANCE AND SUPPORT LEVELS---:
+        #---RESISTANCE AND SUPPORT LEVELS---:
 
         # Initialize technical analysis object
         self.technical_analysis_object = TechnicalAnalysis(ticker)
