@@ -12,19 +12,26 @@ import numpy as np
 import matplotlib.ticker as mticker
 
 
-# For financial data object:
+# For periods to chose in gui:
 PERIOD_DEF = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
+
+# Fonts used in cutomization of plots:
 font_title = {'family': 'Courier New',
               'color': '#822304',
               'weight': 'heavy',
               'size': 25,
               }
 font_xylabel = {'family': 'Courier New',
-              'color': '#8787a1',
-              'weight': 'light',
-              'size': 16,
-              }
-
+                'color': '#8787a1',
+                'weight': 'light',
+                'size': 16,
+                }
+font_cursor = {'family': 'Courier New',
+               'style': 'italic',
+               'color': '#303d34',
+               'weight': 'bold',
+               'size': 15,
+               }
 
 
 class Gui:
@@ -144,7 +151,7 @@ class Gui:
         volume = self.volume.iloc[i]
         cursor_value = 'price: ' + str(price) + ', volume: ' + str(volume)
 
-        self.axlist[0].text(x=0.1, y=1.05, s=cursor_value, fontsize=15, transform=self.axlist[0].transAxes)
+        self.axlist[0].text(x=0.3, y=1.05, s=cursor_value, fontdict=font_cursor, transform=self.axlist[0].transAxes)
         self.figure_canvas_agg.draw()
 
     def create_plot(self):
