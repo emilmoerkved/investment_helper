@@ -213,8 +213,8 @@ class Gui:
                     # to get the startdate for the mov ave calculation
                     # and get the df back to that date to get mov ave over whole range.
                     startdate = get_date_from_period(self.values['-PERIOD-'][0], 50)
-                    df = self.financial_data_object.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
-                    close_price_mov_ave = df['Close']
+                    df_mva = self.financial_data_object.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
+                    close_price_mov_ave = df_mva['Close']
                 else:
                     # if period = max the moving average calculation starts at the first trade day.
                     close_price_mov_ave = self.close_price
@@ -232,8 +232,8 @@ class Gui:
                     # to get the startdate for the mov ave calculation
                     # and get the df back to that date to get mov ave over whole range.
                     startdate = get_date_from_period(self.values['-PERIOD-'][0], 200)
-                    df = self.financial_data_object.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
-                    close_price_mov_ave = df['Close']
+                    df_mva = self.financial_data_object.get_stock_history_based_on_dates(ticker, startdate, datetime.date.today())
+                    close_price_mov_ave = df_mva['Close']
                 else:
                     # if period = max the moving average calculation starts at the first trade day.
                     close_price_mov_ave = self.close_price
