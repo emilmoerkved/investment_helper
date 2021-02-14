@@ -9,6 +9,7 @@ import datetime
 from extract_financial_data import get_date_from_period
 from technical_analysis import TechnicalAnalysis
 import numpy as np
+import matplotlib.ticker as mticker
 
 
 # For financial data object:
@@ -17,6 +18,11 @@ font_title = {'family': 'Courier New',
               'color': '#822304',
               'weight': 'heavy',
               'size': 25,
+              }
+font_xylabel = {'family': 'Courier New',
+              'color': '#8787a1',
+              'weight': 'light',
+              'size': 16,
               }
 
 
@@ -178,12 +184,15 @@ class Gui:
         self.axlist[1].fill_between(self.volume.index, self.volume)
 
         # Customization of axes:
-        self.axlist[0].set_ylabel('Close Price [$]')
+        self.axlist[0].set_ylabel('Close Price [$]', fontdict=font_xylabel)
         self.axlist[0].set_title(ticker + ' - ' + self.values['-STOCK-'][0][:self.values['-STOCK-'][0].index('-')],
                                  pad=45, fontdict=font_title)
-        self.axlist[1].set_ylabel('Volume [# trades]')
+        self.axlist[0].yaxis.set_label_coords(-0.1, 0.5)
+        self.axlist[1].set_ylabel('Volume', fontdict=font_xylabel)
+        self.axlist[1].yaxis.set_label_coords(-0.1, 0.5)
+        self.axlist[1].yaxis.set_major_formatter(mticker.FormatStrFormatter('%d'))
         plt.setp(self.axlist[0].get_xticklabels(), visible=False)
-        plt.subplots_adjust(left=0.125, bottom=0.171, right=0.9, top=0.88, wspace=0.2, hspace=0.195)
+        plt.subplots_adjust(left=0.125, bottom=0.171, right=0.9, top=0.88, wspace=0.2, hspace=-0.4)
 
         #--- MOVING AVERAGE CALCULATIONS---:
 
@@ -343,14 +352,25 @@ class Gui:
                 colors_for_alines.append('green')
 
         # Plot a candlestick plot to figure and axlist
+        width_config = {'volume_width': 0.525}
         self.fig, self.axlist = mpf.plot(df, type='candle', figratio=(9, 6), returnfig=True, volume=True,
-                               ylabel='Open, High, Low, Close', style='yahoo', mav=mov_ave,
-                               alines=dict(alines=alines_list, colors=colors_for_alines, linewidths=0.5))
+                                         style='yahoo', mav=mov_ave, update_width_config=width_config,
+                                         alines=dict(alines=alines_list, colors=colors_for_alines, linewidths=0.5))
 
         # Customize axes:
+        self.fig.subplots_adjust(hspace=0.5)
         self.axlist[0].legend(legend_text, loc='best', fontsize='small')
         self.axlist[0].set_title(ticker + ' - ' + self.values['-STOCK-'][0][:self.values['-STOCK-'][0].index('-')],
                                  pad=45, fontdict=font_title)
+        self.axlist[0].set_ylabel('Open, High, Low, Close', fontdict=font_xylabel)
+        self.axlist[0].yaxis.set_ticks_position("left")
+        self.axlist[0].yaxis.set_label_coords(-0.14, 0.5)
+
+        # By some reason axlist has length 4 and axlist[2] is the volume graph.
+        self.axlist[2].set_ylabel('Volume', fontdict=font_xylabel)
+        self.axlist[2].yaxis.set_ticks_position("left")
+        self.axlist[2].yaxis.set_label_coords(-0.14, 0.5)
+        self.axlist[2].yaxis.set_major_formatter(mticker.FormatStrFormatter('%d'))
 
 
 # Get dateformatter based on period chosen:
