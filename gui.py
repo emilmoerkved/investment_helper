@@ -48,6 +48,7 @@ class Gui:
         self.multicursor = 0
         self.technical_analysis_object = 0
         self.financial_data_object = financial_data_object
+        self.scat = 0
 
         # Initialize gui layout
         self.layout = [
@@ -138,8 +139,17 @@ class Gui:
             # Finds the closest value on x-axis as index
             i = np.searchsorted(self.close_price.index, [x])[0]
 
+            # Show point in graph where cursor is located
+            if 0 < i <= len(self.close_price.index) - 1:
+                self.scat = self.axlist[0].scatter([self.close_price.index[i]], [self.close_price.iloc[i]], marker='o',
+                                                   s=80)
+
         elif self.event == 'Candlestick plot':
             i = int(coord.xdata)
+
+            # Show point in graph where cursor is located
+            if 0 < i <= len(self.close_price.index)-1:
+                self.scat = self.axlist[0].scatter([i], [self.close_price.iloc[i]], marker='o', s=80)
 
         # Make sure that the index i is in range:
         if i >= len(self.close_price.index):
@@ -153,6 +163,11 @@ class Gui:
 
         self.axlist[0].text(x=0.3, y=1.05, s=cursor_value, fontdict=font_cursor, transform=self.axlist[0].transAxes)
         self.figure_canvas_agg.draw()
+
+        # clear scatter point if exists:
+        if self.scat != 0:
+            self.scat.remove()
+            self.scat = 0
 
     def create_plot(self):
         # Close all older figures to clear window:
