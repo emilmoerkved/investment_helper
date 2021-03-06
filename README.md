@@ -4,6 +4,11 @@ gui to analyze stocks and financial papers.
 Needed imports: 
 pysimplegui,
 matplotlib.pyplot,
+matplotlib.backends.backend_tkagg,
+matplotlib.widgets,
+matplotlib.dates, 
+matplotlib.ticker,
+numpy,
 mplfinance,
 pandas,
 yfinance,

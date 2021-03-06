@@ -1,5 +1,8 @@
+# External modules:
 import datetime
 import unittest
+
+# Internal modules:
 from technical_analysis import TechnicalAnalysis
 from extract_financial_data import FinancialData
 

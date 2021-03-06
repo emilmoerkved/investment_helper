@@ -1,7 +1,10 @@
+# External modules:
 import unittest
 import pandas
-from extract_financial_data import FinancialAssetList, FinancialData
 import datetime
+
+# Internal modules:
+from extract_financial_data import FinancialAssetList, FinancialData
 
 
 class TestFinancialAssetList(unittest.TestCase):
