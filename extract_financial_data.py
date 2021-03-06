@@ -3,12 +3,15 @@ import yfinance as yf
 import datetime
 import pandas_market_calendars as mcal
 
+from technical_analysis import TechnicalAnalysis
 
-class FinancialData:
+
+class FinancialAssetList:
 
     def __init__(self):
         self.readable_stock_list = []
         self.tickers = []
+        self.default_periods = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
         self._fill_stocks()
 
     def _fill_stocks(self):
@@ -36,21 +39,28 @@ class FinancialData:
         string += 'BUSINESS SUMMARY: ' + stock_info_dict['longBusinessSummary']
         return string
 
-    def get_stock_history_based_on_period(self, ticker, period='ytd'):
+    def get_ticker_from_readable_stock(self, readable_stock):
+        ticker = readable_stock[readable_stock.index('---')+3:]
+        return ticker
+
+
+class FinancialData:
+
+    def __init__(self, ticker):
+        self.ticker = ticker
+        self.technical_analysis = TechnicalAnalysis(self.ticker)
+
+    def get_stock_df_by_period(self, period='ytd'):
         if period == '1d':
             granularity = '1m'
         else:
             granularity = '1d'
-        df = yf.download(tickers=ticker, period=period, interval=granularity, auto_adjust=True)
+        df = yf.download(tickers=self.ticker, period=period, interval=granularity, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
-    def get_stock_history_based_on_dates(self, ticker, startdate, enddate):
-        df = yf.download(tickers=ticker, start=startdate, end=enddate, auto_adjust=True)
+    def get_stock_df_by_dates(self, startdate, enddate):
+        df = yf.download(tickers=self.ticker, start=startdate, end=enddate, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
-
-    def get_ticker_from_readable_stock(self, readable_stock):
-        ticker = readable_stock[readable_stock.index('---')+3:]
-        return ticker
 
 
 # period can be 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd

@@ -8,11 +8,14 @@ class TechnicalAnalysis:
 
     def __init__(self, ticker):
         self.ticker = ticker
+        self.df = 0  # dataframe to to analysis on
         self.resistance = 0  # dataframe
-        self.resistance_update_date = 0
         self.support = 0  # dataframe
-        self.support_update_date = 0
-        self.trend = 0
+        self.resistance_update_date = 0  # datetime
+        self.support_update_date = 0  # datetime
+
+    def set_df(self, df):
+        self.df = df
 
     def get_resistance_levels(self):
         return self.resistance
@@ -28,7 +31,7 @@ class TechnicalAnalysis:
         support_df = pd.DataFrame(self.support[(self.support.Importance > 0)])
         return support_df.nlargest(3, 'Low')
 
-    def find_resistance_levels(self, yf_df, resistance_threshold=0.01):
+    def find_resistance_levels(self, resistance_threshold=0.01):
         # Create a resistance data frame where the resistance points are defined as where the local maxima is found
         # where the price is higher than last closing value.
         # In addition, a column for the importance of the resistance point is also calculated where the importance is
@@ -38,12 +41,12 @@ class TechnicalAnalysis:
         # If the volume is also here higher than the mean value of volume during the period,
         # the importance point gets increased by 1.
 
-        self._get_possible_resistance_points(yf_df)
+        self._get_possible_resistance_points()
         self._update_resistance_with_importance_column()
-        self._update_importance_of_resistance_df(yf_df, resistance_threshold)
+        self._update_importance_of_resistance_df(resistance_threshold)
         self._filter_out_paired('Resistance')
 
-    def find_support_levels(self, yf_df, support_threshold=0.01):
+    def find_support_levels(self, support_threshold=0.01):
         # Create a support data frame where the support points are defined as where the local minima is found
         # where the price is lower than last closing value.
         # In addition, a column for the importance of the support point is also calculated where the importance is
@@ -53,25 +56,24 @@ class TechnicalAnalysis:
         # If the volume is also here higher than the mean value of volume during the period,
         # the importance point gets increased by 1.
 
-        self._get_possible_support_points(yf_df)
+        self._get_possible_support_points()
         self._update_support_with_importance_column()
-        self._update_importance_of_support_df(yf_df, support_threshold)
+        self._update_importance_of_support_df(support_threshold)
         self._filter_out_paired('Support')
 
+    def _get_possible_resistance_points(self):
+        last_close = self.df.Close[-1]
+        self.resistance_update_date = self.df.index[-1].date()
+        self.resistance = pd.DataFrame(self.df.High[(self.df.High.shift(1) < self.df.High)
+                                                & (self.df.High.shift(-1) < self.df.High)
+                                                & (self.df.High > last_close)])
 
-    def _get_possible_resistance_points(self, yf_df):
-        last_close = yf_df.Close[-1]
-        self.resistance_update_date = yf_df.index[-1].date()
-        self.resistance = pd.DataFrame(yf_df.High[(yf_df.High.shift(1) < yf_df.High)
-                                                & (yf_df.High.shift(-1) < yf_df.High)
-                                                & (yf_df.High > last_close)])
-
-    def _get_possible_support_points(self, yf_df):
-        last_close = yf_df.Close[-1]
-        self.support_update_date = yf_df.index[-1].date()
-        self.support = pd.DataFrame(yf_df.Low[(yf_df.Low.shift(1) > yf_df.Low)
-                                                 & (yf_df.Low.shift(-1) > yf_df.Low)
-                                                 & (yf_df.Low < last_close)])
+    def _get_possible_support_points(self):
+        last_close = self.df.Close[-1]
+        self.support_update_date = self.df.index[-1].date()
+        self.support = pd.DataFrame(self.df.Low[(self.df.Low.shift(1) > self.df.Low)
+                                                 & (self.df.Low.shift(-1) > self.df.Low)
+                                                 & (self.df.Low < last_close)])
 
     def _update_resistance_with_importance_column(self):
         self.resistance['Importance'] = 0
@@ -100,9 +102,9 @@ class TechnicalAnalysis:
     def _get_thresholds(self, level, threshold):
         return level + level*threshold, level - level*threshold
 
-    def _update_importance_of_resistance_df(self, yf_df, resistance_threshold):
+    def _update_importance_of_resistance_df(self, resistance_threshold):
         self._reset_index_of_resistance() # Used as its easier to iterate with indexes as numbers
-        volume_mean = yf_df['Volume'].mean()
+        volume_mean = self.df['Volume'].mean()
 
         for i in range(0, len(self.resistance)):
             if self._is_resistance_row_already_paired_index_based(i):
@@ -112,7 +114,7 @@ class TechnicalAnalysis:
 
             # If volume is higher than mean the importance increases by 1:
             date = self.resistance.loc[i, 'Date']
-            if yf_df['Volume'][date] > volume_mean:
+            if self.df['Volume'][date] > volume_mean:
                 self.resistance.loc[i, 'Importance'] += 1
 
             # Find threshold for comparing resistance level:
@@ -141,10 +143,9 @@ class TechnicalAnalysis:
             is_not_paired = self.support['Importance'] >= 0
             self.support = self.support[is_not_paired]
 
-
-    def _update_importance_of_support_df(self, yf_df, support_threshold):
+    def _update_importance_of_support_df(self, support_threshold):
         self._reset_index_of_support() # Used as its easier to iterate with indexes as numbers
-        volume_mean = yf_df['Volume'].mean()
+        volume_mean = self.df['Volume'].mean()
 
         for i in range(0, len(self.support)):
             if self._is_support_row_already_paired_index_based(i):
@@ -154,7 +155,7 @@ class TechnicalAnalysis:
 
             # If volume is higher than mean the importance increases by 1:
             date = self.support.loc[i, 'Date']
-            if yf_df['Volume'][date] > volume_mean:
+            if self.df['Volume'][date] > volume_mean:
                 self.support.loc[i, 'Importance'] += 1
 
             # Find threshold for comparing support level:
