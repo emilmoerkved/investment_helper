@@ -67,7 +67,11 @@ class Canvas:
 
     def _embed_mouse_hovering_as_cursor_to_tk_canvas(self):
         # function create_cursor_value is called while hovering over the canvas with the mouse
-        self._figure_canvas_tkagg.mpl_connect('motion_notify_event', self._plotting_object.create_cursor_value)
+        try:
+            self._figure_canvas_tkagg.mpl_connect('motion_notify_event', self._plotting_object.create_cursor_value)
+        except IndexError:
+            print('ERROR')
+
 
     def _pack_canvas_to_tk(self):
         # get_tk_widget() returns the tkinter widget used to implement FigureCanvasTkAgg

@@ -16,16 +16,35 @@ class FinancialAssetList:
         self._fill_stocks()
 
     def _fill_stocks(self):
+        self._fill_sp500()
+        self._fill_obx()
+
+    def _fill_sp500(self):
         df = self._get_sp500()  # ['Symbol', 'Security']
         for i in range(len(df)):
             self.tickers.append(df['Symbol'][i])
             self.readable_stock_list.append('---'.join([df['Security'][i], df['Symbol'][i]]))
+
+    def _fill_obx(self):
+        df = self._get_obx()  # ['Company', 'Ticker']
+        for i in range(len(df)):
+            ticker_wiki = df['Ticker'][i]
+            ticker_yf = ticker_wiki.replace('OSE: ', '') + '.OL'
+            self.tickers.append(ticker_yf)
+            self.readable_stock_list.append('---'.join([df['Company'][i], ticker_yf]))
 
     def _get_sp500(self):
         table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
         df = table[0]
         df.reset_index()
         return df[['Symbol', 'Security']]
+
+    def _get_obx(self):
+        table = pd.read_html('https://en.wikipedia.org/wiki/List_of_companies_listed_on_the_Oslo_Stock_Exchange')
+        df = table[1]
+        df.reset_index()
+        print(df.head)
+        return df[['Company', 'Ticker']]
 
     def get_stock_info(self, ticker):
         return yf.Ticker(ticker).info
@@ -55,6 +74,8 @@ class FinancialData:
         else:
             granularity = '1d'
         df = yf.download(tickers=self._ticker, period=period, interval=granularity, auto_adjust=True)
+        if len(df) == 0:  # empty df, probably because company is delisted
+            print(self._ticker, ' is delisted!')
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
     def get_stock_df_by_dates(self, startdate, enddate):

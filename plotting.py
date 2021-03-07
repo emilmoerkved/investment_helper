@@ -93,6 +93,9 @@ class Plotting:
 
         self._financial_data_object = FinancialData(self._user_input.get_ticker())
         self._set_df(self._financial_data_object.get_stock_df_by_period(self._user_input.get_period()))
+        if self._is_df_empty():  # possible if company is delisted for example.
+            self._set_title_delisted_company()
+            return self._fig, self._axlist  # empty figure but title updated
 
         self._plot_data_normal()
         self._customize_axes_normal()
@@ -119,6 +122,13 @@ class Plotting:
         self._axlist.append(plt.subplot2grid((6, 1), (5, 0), rowspan=1, colspan=1, sharex=self._axlist[0]))
 
         self._fig.set_size_inches(404 * 2 / float(dpi), 404 / float(dpi))
+
+    def _is_df_empty(self):
+        return len(self._df) == 0
+
+    def _set_title_delisted_company(self):
+        self._axlist[0].set_title(self._user_input.get_title() + ' possible delisted!', pad=45,
+                                  fontdict=self._font_title)
 
     def _plot_data_normal(self):
         self._axlist[0].plot_date(self._df['Close'].index, self._df['Close'].values, '-', linewidth=2)
