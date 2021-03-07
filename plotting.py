@@ -246,11 +246,14 @@ class Plotting:
     def create_cursor_value(self, mouse):
         self._clear_cursor_text()
         if mouse.inaxes:
-            pass
-            #self._update_scatter(mouse)
-            #self._update_cursor(mouse)
-            #mouse.canvas.draw()
-            #self._clear_scatter()
+            self._turn_off_autoscale()  # So that zooming is possible while the plot gets updated.
+            self._update_scatter(mouse)
+            self._update_cursor(mouse)
+            self._clear_scatter()
+
+    def _turn_off_autoscale(self):
+        for ax in self._axlist:
+            ax.autoscale(False)
 
     def _clear_cursor_text(self):
         self._axlist[0].texts = []  # To clear earlier texts from self.ax1.texts
@@ -270,6 +273,7 @@ class Plotting:
         if 0 < i <= len(self._df['Close'].index) - 1:
             if self._user_input.event == 'Normal plot':  # normal plot has datetime as x-axis
                 x = self._df['Close'].index[i]
+                print(x)
             elif self._user_input.event == 'Candlestick plot':  # candlestick plot has index as x-axis
                 x = i
             self._scat = self._axlist[0].scatter([x], [self._df['Close'].iloc[i]], marker='o', s=80, color='gold')
