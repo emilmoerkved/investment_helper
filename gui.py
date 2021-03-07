@@ -10,16 +10,11 @@ from user_input import UserInput
 class Gui:
 
     def __init__(self):
-        self._event = None
-        self._values = None
-        self._technical_analysis_object = None
         self._financial_asset_list_object = FinancialAssetList()
-        self._financial_data_object = None
         self._canvas_object = Canvas()
         self._user_input = UserInput()
         self._layout = None
         self._window = None
-        self._period = None
         self._initialize_gui_layout()
         self._initialize_gui_window()
 

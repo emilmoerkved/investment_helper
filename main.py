@@ -10,8 +10,8 @@ import test_technical_analysis
 
 def main():
     # exit=False to run the rest of the code
-    # unittest.main(module=test_extract_financial_data, exit=False)
-    # unittest.main(module=test_technical_analysis, exit=True)
+    #unittest.main(module=test_extract_financial_data, exit=False)
+    #unittest.main(module=test_technical_analysis, exit=True)
     Gui().start()
 
 

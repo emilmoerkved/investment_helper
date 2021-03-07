@@ -13,7 +13,6 @@ class FinancialAssetList:
     def __init__(self):
         self.readable_stock_list = []
         self.tickers = []
-        self.default_periods = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
         self._fill_stocks()
 
     def _fill_stocks(self):
@@ -29,9 +28,7 @@ class FinancialAssetList:
         return df[['Symbol', 'Security']]
 
     def get_stock_info(self, ticker):
-        stock_ticker = yf.Ticker(ticker)
-        stock_info = stock_ticker.info
-        return stock_info
+        return yf.Ticker(ticker).info
 
     def get_stock_info_to_string(self, ticker):
         stock_info_dict = self.get_stock_info(ticker)
@@ -42,30 +39,29 @@ class FinancialAssetList:
         return string
 
     def get_ticker_from_readable_stock(self, readable_stock):
-        ticker = readable_stock[readable_stock.index('---')+3:]
-        return ticker
+        return readable_stock[readable_stock.index('---')+3:]
 
 
 class FinancialData:
 
     def __init__(self, ticker):
-        self.ticker = ticker
-        self.technical_analysis = TechnicalAnalysis(self.ticker)
+        self._ticker = ticker
+        self.technical_analysis = TechnicalAnalysis(self._ticker)
+        # default_periods = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
 
     def get_stock_df_by_period(self, period='ytd'):
         if period == '1d':
             granularity = '1m'
         else:
             granularity = '1d'
-        df = yf.download(tickers=self.ticker, period=period, interval=granularity, auto_adjust=True)
+        df = yf.download(tickers=self._ticker, period=period, interval=granularity, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
     def get_stock_df_by_dates(self, startdate, enddate):
-        df = yf.download(tickers=self.ticker, start=startdate, end=enddate, auto_adjust=True)
+        df = yf.download(tickers=self._ticker, start=startdate, end=enddate, auto_adjust=True)
         return df[['Open', 'High', 'Low', 'Close', 'Volume']]
 
 
-# period can be 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd
 def get_date_from_period(period, mov_ave_days):
     date = datetime.date.today()
     if period == '1mo':
