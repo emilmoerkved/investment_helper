@@ -246,10 +246,11 @@ class Plotting:
     def create_cursor_value(self, mouse):
         self._clear_cursor_text()
         if mouse.inaxes:
-            self._update_scatter(mouse)
-            self._update_cursor(mouse)
-            mouse.canvas.draw()
-            self._clear_scatter()
+            pass
+            #self._update_scatter(mouse)
+            #self._update_cursor(mouse)
+            #mouse.canvas.draw()
+            #self._clear_scatter()
 
     def _clear_cursor_text(self):
         self._axlist[0].texts = []  # To clear earlier texts from self.ax1.texts
@@ -259,11 +260,11 @@ class Plotting:
             self._scat.remove()
             self._scat = None
 
-    def _update_scatter(self, coord):
+    def _update_scatter(self, mouse):
         if self._user_input.event == 'Normal plot':
-            self._plot_scatter_on_cursor(self._get_x_pos_from_epoch_coord(coord))
+            self._plot_scatter_on_cursor(self._get_x_pos_from_epoch_coord(mouse))
         elif self._user_input.event == 'Candlestick plot':
-            self._plot_scatter_on_cursor(self._get_index_in_range_from_coord(coord))
+            self._plot_scatter_on_cursor(self._get_index_in_range_from_coord(mouse))
 
     def _plot_scatter_on_cursor(self, i):
         if 0 < i <= len(self._df['Close'].index) - 1:
@@ -273,15 +274,15 @@ class Plotting:
                 x = i
             self._scat = self._axlist[0].scatter([x], [self._df['Close'].iloc[i]], marker='o', s=80, color='gold')
 
-    def _get_x_pos_from_epoch_coord(self, coord):
-        x = num2date(int(coord.xdata)).replace(tzinfo=None)
+    def _get_x_pos_from_epoch_coord(self, mouse):
+        x = num2date(int(mouse.xdata)).replace(tzinfo=None)
         return np.searchsorted(self._df['Close'].index, [x])[0]
 
-    def _get_index_in_range_from_coord(self, coord):
+    def _get_index_in_range_from_coord(self, mouse):
         if self._user_input.event == 'Normal plot':
-            x_pos = self._get_x_pos_from_epoch_coord(coord)
+            x_pos = self._get_x_pos_from_epoch_coord(mouse)
         else:
-            x_pos = int(coord.xdata)
+            x_pos = int(mouse.xdata)
         if x_pos >= len(self._df['Close'].index):
             return len(self._df['Close'].index) - 1
         elif x_pos < 0:
@@ -289,15 +290,16 @@ class Plotting:
         else:
             return x_pos
 
-    def _update_cursor(self, coord):
-        self._axlist[0].text(x=0.3, y=1.05, s=self._get_cursor_text(coord), fontdict=self._font_cursor,
+    def _update_cursor(self, mouse):
+        self._axlist[0].text(x=0.3, y=1.05, s=self._get_cursor_text(mouse), fontdict=self._font_cursor,
                              transform=self._axlist[0].transAxes)
-        coord.canvas.draw()
+        mouse.canvas.draw()
 
-    def _get_cursor_text(self, coord):
-        price = "{:.2f}".format(self._df['Close'].iloc[self._get_index_in_range_from_coord(coord)])
-        volume = self._df['Volume'].iloc[self._get_index_in_range_from_coord(coord)]
+    def _get_cursor_text(self, mouse):
+        price = "{:.2f}".format(self._df['Close'].iloc[self._get_index_in_range_from_coord(mouse)])
+        volume = self._df['Volume'].iloc[self._get_index_in_range_from_coord(mouse)]
         return 'price: ' + str(price) + ', volume: ' + str(volume)
+
 
 # Get dateformatter based on period chosen:
 def get_formatter(period):
