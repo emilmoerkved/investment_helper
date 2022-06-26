@@ -1,0 +1,5 @@
+Company,Ticker,Country
+DNB ASA,DNB.OL,NOR
+Equinor,EQNR.OL,NOR
+Norsk Hydro,NHY.OL,NOR
+Telenor,TEL.OL,NOR

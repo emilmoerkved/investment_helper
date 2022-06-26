@@ -1,0 +1,6 @@
+Company,Ticker,Country
+Yield Curve,SPECIAL: YIELD_CURVE,WORLD
+13 Week Treasury Bill,^IRX,WORLD
+Treasury Yield 5 Years,^FVX,WORLD
+Treasury Yield 10 Years,^TNX,WORLD
+Treasury Yield 30 Years,^TYX,WORLD

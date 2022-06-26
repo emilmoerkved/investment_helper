@@ -1,0 +1,186 @@
+Company,Ticker,Country
+ABG Sundal Collier,ABG.OL,NOR
+AF Group,AFG.OL,NOR
+Akastor,AKA.OL,NOR
+Aker,AKER.OL,NOR
+Aker BP,AKERBP.OL,NOR
+Aker Solutions,AKSO.OL,NOR
+AKVA Group,AKVA.OL,NOR
+American Shipping Company,AMSC.OL,NOR
+Carasent,CARA.OL,NOR
+Aqualis,AQUA.OL,NOR
+Archer,ARCHER.OL,NOR
+Arcus,ARCUS.OL,NOR
+Arendals Fossekompani,AFK.OL,NOR
+Asetek,ASETEK.OL,NOR
+Atea,ATEA.OL,NOR
+Atlantic Petroleum,ATLA-NOK.OL,NOR
+Aurskog Sparebank*,AURG.OL,NOR
+Austevoll Seafood,AUSS.OL,NOR
+Avance Gas Holding,AVANCE.OL,NOR
+Awilco Drilling,AWDR.OL,NOR
+Axactor,ACR.OL,NOR
+B2Holding,B2H.OL,NOR
+Bakkafrost,BAKKA.OL,NOR
+Belships,BEL.OL,NOR
+Endúr,ENDUR.OL,NOR
+BerGenBio,BGBIO.OL,NOR
+Biotec Pharmacon,BIOTEC.OL,NOR
+Bonheur,BON.OL,NOR
+Borgestad,BOR.OL,NOR
+Borr Drilling,BDRILL.OL,NOR
+Borregaard,BRG.OL,NOR
+Bouvet ASA,BOUVET.OL,NOR
+BW LPG,BWLPG.OL,NOR
+BW Offshore Limited,BWO.OL,NOR
+Byggma,BMA.OL,NOR
+ContextVision,COV.OL,NOR
+Crayon Group Holding,CRAYON.OL,NOR
+Data Respons,DAT.OL,NOR
+DNB ASA,DNB.OL,NOR
+DNO International,DNO.OL,NOR
+DOF ASA,DOF.OL,NOR
+Eidesvik Offshore,EIOF.OL,NOR
+Elkem,ELK.OL,NOR
+Electromagnetic Geoservices,EMGS.OL,NOR
+Entra,ENTRA.OL,NOR
+Equinor,EQNR.OL,NOR
+Europris,EPR.OL,NOR
+Evry,EVRY.OL,NOR
+Fjord1,FJORD.OL,NOR
+Fjordkraft Holding,FKRAFT.OL,NOR
+FLEX LNG,FLNG.OL,NOR
+Frontline Ltd.,FRO.OL,NOR
+Funcom,FUNCOM.OL,NOR
+Gaming Innovation Group,GIG.OL,NOR
+GC Rieber Shipping,RISH.OL,NOR
+Gjensidige Forsikring,GJF.OL,NOR
+Golden Ocean Group,GOGL.OL,NOR
+Goodtech,GOD.OL,NOR
+Grieg Seafood,GSF.OL,NOR
+Gyldendal ASA,GYL.OL,NOR
+Höegh LNG Holdings,HLNG.OL,NOR
+Havila Shipping,HAVI.OL,NOR
+Havyard Group,HYARD.OL,NOR
+Helgeland Sparebank*,HELG.OL,NOR
+Hexagon Composites,HEX.OL,NOR
+Hiddn Solutions,HIDDN.OL,NOR
+Høland og Setskog Sparebank*,HSPG.OL,NOR
+IDEX ASA,IDEX.OL,NOR
+Incus Investor,INC.OL,NOR
+Infront,INFRNT.OL,NOR
+InterOil Exploration and Production,IOX.OL,NOR
+Sogn Sparebank,SOGN.OL,NOR
+Itera,ITE.OL,NOR
+Jinhui Shipping and Transport,JIN.OL,NOR
+Jæren Sparebank*,JAEREN.OL,NOR
+Kid,KID.OL,NOR
+Kitron,KIT.OL,NOR
+Komplett Bank,KOMP.OL,NOR
+Kongsberg Automotive,KOA.OL,NOR
+Kongsberg Gruppen,KOG.OL,NOR
+Kværner,KVAER.OL,NOR
+Lerøy Seafood Group,LSG.OL,NOR
+Magseis,MSEIS.OL,NOR
+Mowi,MOWI.OL,NOR
+Medistim,MEDI.OL,NOR
+Melhus Sparebank*,MELG.OL,NOR
+Multiconsult,MULTI.OL,NOR
+Napatech,NAPA.OL,NOR
+Navamedic,NAVA.OL,NOR
+NEL Hydrogen,NEL.OL,NOR
+NEXT Biometrics Group,NEXT.OL,NOR
+Northern Drilling,NODL.OL,NOR
+MPC Container Ships,MPCC.OL,NOR
+Nordic Nanovector,NANO.OL,NOR
+Nordic Semiconductor,NOD.OL,NOR
+Norsk Hydro,NHY.OL,NOR
+Norway Royal Salmon,NRS.OL,NOR
+Norwegian Air Shuttle,NAS.OL,NOR
+Norwegian Energy Company,NOR.OL,NOR
+Norwegian Finans Holding,NOFI.OL,NOR
+Norwegian Property,NPRO.OL,NOR
+NRC Group,NRC.OL,NOR
+NTS ASA,NTS.OL,NOR
+Ocean Yield,OCY.OL,NOR
+Oceanteam Shipping,OTS.OL,NOR
+Odfjell Drilling,ODL.OL,NOR
+Odfjell ser. A,ODF.OL,NOR
+Odfjell ser. B,ODFB.OL,NOR
+Olav Thon Eiendomsselskap,OLT.OL,NOR
+Orkla Group,ORK.OL,NOR
+Panoro Energy,PEN.OL,NOR
+Pareto Bank,PARB.OL,NOR
+PCI Biotech Holding,PCIB.OL,NOR
+Pexip ASA,PEXIP.OL,NOR
+Petroleum Geo-Services,PGS.OL,NOR
+Petrolia,PSE.OL,NOR
+Photocure,PHO.OL,NOR
+Polarcus,PLCS.OL,NOR
+Polaris Media,POL.OL,NOR
+poLight,PLT.OL,NOR
+Prosafe,PRS.OL,NOR
+Protector Forsikring,PROTCT.OL,NOR
+Q-Free,QFR.OL,NOR
+Questerre Energy Corporation,QEC.OL,NOR
+RAK Petroleum,RAKP.OL,NOR
+Reach Subsea,REACH.OL,NOR
+REC Silicon,REC.OL,NOR
+SalMar,SALM.OL,NOR
+Salmones Camanchaca,SALMON.OL,NOR
+Sandnes Sparebank*,SADG.OL,NOR
+SAS Group,SAS-NOK.OL,NOR
+SATS,SATS.OL,NOR
+Sbanken,SBANK.OL,NOR
+Scatec,SCATC.OL,NOR
+Schibsted ser. A,SCHA.OL,NOR
+Schibsted ser. B,SCHB.OL,NOR
+The Scottish Salmon Company,SSC.OL,NOR
+S.D. Standard Drilling,SDSD.OL,NOR
+SeaBird Exploration,SBX.OL,NOR
+Seadrill,SDRL.OL,NOR
+Self Storage Group,SSG.OL,NOR
+Selvaag Bolig,SBO.OL,NOR
+Shelf Drilling,SHLF.OL,NOR
+Siem Offshore,SIOFF.OL,NOR
+Skue Sparebank*,SKUE.OL,NOR
+Solon Eiendom,SOLON.OL,NOR
+Solstad Farstad,SOFF.OL,NOR
+SpareBank 1 BV*,SBVG.OL,NOR
+SpareBank 1 Nord–Norge*,NONG.OL,NOR
+SpareBank 1 Nøtterøy–Tønsberg*,SBTE.OL,NOR
+SpareBank 1 Ringerike Hadeland*,RING.OL,NOR
+SpareBank 1 SMN*,MING.OL,NOR
+SpareBank 1 SR-Bank,SRBANK.OL,NOR
+SpareBank 1 Nordvest*,SBTE.OL,NOR
+SpareBank 1 Østfold Akershus*,SOAG.OL,NOR
+SpareBank 1 Østlandet*,SPOL.OL,NOR
+Sparebanken Møre*,MORG.OL,NOR
+Sparebanken Sør*,SOR.OL,NOR
+Sparebanken Vest*,SVEG.OL,NOR
+Sparebanken Øst*,SPOG.OL,NOR
+Star Bulk Carriers,SBLK.OL,NOR
+Stolt-Nielsen,SNI.OL,NOR
+Storebrand,STB.OL,NOR
+Storm Real Estate,STORM.OL,NOR
+StrongPoint,STRONG.OL,NOR
+Subsea 7,SUBC.OL,NOR
+Targovax,TRVX.OL,NOR
+Team Tankers International,TEAM.OL,NOR
+Telenor,TEL.OL,NOR
+TGS-NOPEC Geophysical Company,TGS.OL,NOR
+Thin Film Electronics ASA,THIN.OL,NOR
+Tomra Systems,TOM.OL,NOR
+Totens Sparebank*,TOTG.OL,NOR
+Treasure ASA,TRE.OL,NOR
+Veidekke,VEI.OL,NOR
+Vistin Pharma,VISTIN.OL,NOR
+Volue,VOLUE.OL,NOR
+Voss Veksel- og Landmandsbank,VVL.OL,NOR
+Webstep,WSTEP.OL,NOR
+Wilh. Wilhelmsen Holding ser. A,WWI.OL,NOR
+Wilh. Wilhelmsen Holding ser. B,WWIB.OL,NOR
+Wilson,WILS.OL,NOR
+XXL,XXL.OL,NOR
+Yara International,YAR.OL,NOR
+Zalaris,ZAL.OL,NOR
