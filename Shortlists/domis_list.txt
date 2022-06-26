@@ -1,0 +1,4 @@
+Company,Ticker,Country
+Gold,GC=F,WORLD
+S&P 500,^GSPC,WORLD
+Bitcoin,BTC-USD,WORLD

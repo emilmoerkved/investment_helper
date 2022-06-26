@@ -1,0 +1,7 @@
+﻿Ticker;Company;StockExchange
+CNI;Canadian National Railway Company;NYSE
+CP;Canadian Pacific Railway Limited;NYSE
+
+
+
+

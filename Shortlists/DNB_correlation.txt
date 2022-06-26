@@ -1,0 +1,16 @@
+﻿Company,Ticker,Country
+DNB ASA,DNB.OL,NOR
+DNO International,DNO.OL,NOR
+Gaming Innovation Group,GIG.OL,NOR
+Havyard Group,HYARD.OL,NOR
+Jinhui Shipping and Transport,JIN.OL,NOR
+Kongsberg Automotive,KOA.OL,NOR
+Napatech,NAPA.OL,NOR
+Odfjell Drilling,ODL.OL,NOR
+Panoro Energy,PEN.OL,NOR
+Petrolia,PSE.OL,NOR
+RAK Petroleum,RAKP.OL,NOR
+Reach Subsea,REACH.OL,NOR
+Stolt-Nielsen,SNI.OL,NOR
+Subsea 7,SUBC.OL,NOR
+TGS-NOPEC Geophysical Company,TGS.OL,NOR

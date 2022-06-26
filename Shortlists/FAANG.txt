@@ -1,0 +1,6 @@
+Company,Ticker,Country
+Alphabet (Class A),GOOGL,USA
+Amazon,AMZN,USA
+Apple,AAPL,USA
+Meta Platforms,FB,USA
+Netflix,NFLX,USA

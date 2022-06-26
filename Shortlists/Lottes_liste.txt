@@ -1,0 +1,4 @@
+Company,Ticker,Country
+Amazon,AMZN,USA
+Apple,AAPL,USA
+Boeing,BA,USA

@@ -1,0 +1,3 @@
+Company,Ticker,Country
+DNB ASA,DNB.OL,NOR
+Norwegian Air Shuttle,NAS.OL,NOR

@@ -1,0 +1,7 @@
+Company,Ticker,Country
+Equinor,EQNR.OL,NOR
+Mowi,MOWI.OL,NOR
+Nordic Semiconductor,NOD.OL,NOR
+Norsk Hydro,NHY.OL,NOR
+Telenor,TEL.OL,NOR
+Yara International,YAR.OL,NOR

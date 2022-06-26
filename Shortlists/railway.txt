@@ -1,0 +1,7 @@
+Company,Ticker,Country
+Canadian National Railway Company,"0    CNI
+1     CP
+Name: Ticker, dtype: object",WORLD
+Canadian Pacific Railway Limited,"0    CNI
+1     CP
+Name: Ticker, dtype: object",WORLD
